@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="ja">
+	<head>
+		<meta charset="utf-8">
+		<title>Object Pool Example</title>
+		
+		<!-- import libs -->
+		<script src="../src/ObjectPool-1.0.0.js"></script>
+		
+	</head>
+	<body>
+		<div>
+			<button type="button" onClick="getItem()">ObjecrtPool.getItem()</button>
+			<button type="button" onClick="returnItem()">ObjecrtPool.returnItem()</button>
+			<button type="button" onClick="reduce()">ObjecrtPool.reduce()</button>
+		</div>
+		<textarea id="field" name="field" cols="60" rows="20"></textarea>
+		
+		<!-- start -->
+		<script>
+			var index = 0;
+			var items = [];
+			
+			function onRequireItem() {
+				//create item here...
+				var item = { name : "myItem" };
+				return item;
+			}
+			
+			function onDestroyItem(item) {
+				//dispose item here...
+			}
+			
+			var pool = new ALUMICAN.ObjectPool(onRequireItem, onDestroyItem, 10, 5);
+			
+			function getItem() {
+				var item = pool.getItem();
+				items.push(item);
+				log("getItem : itemSize = " + items.length + " poolSize = " + pool.items.length);
+			}
+			
+			function returnItem() {
+				if (items.length == 0) return;
+				var item = items.splice(Math.floor(Math.random() * items.length), 1)[0];
+				pool.returnItem(item);
+				log("returnItem : itemSize = " + items.length + " poolSize = " + pool.items.length);
+			}
+			
+			function reduce() {
+				pool.reduce();
+				log("returnItem : itemSize = " + items.length + " poolSize = " + pool.items.length);
+			}
+			
+			//----------------------------------------
+			function log(s) {
+				var field = document.getElementsByName("field")[0];
+				field.value = "[" + index + "] " + s + "\n" + field.value;
+				++index;
+			}
+		</script>
+	</body>
+</html>
